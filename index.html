@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevCollab App</title>
+  <meta
+    name="description"
+    content="Interactive DevCollab workspace with authentication, workspace creation, members, notifications, billing, tasks, snippets, and AI tools."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section class="auth-shell" id="auth-shell">
+    <div class="auth-hero">
+      <div class="auth-brand">
+        <span class="brand-mark">D</span>
+        <div>
+          <strong>DevCollab</strong>
+          <p>Real-time project collaboration for student developer teams</p>
+        </div>
+      </div>
+
+      <div class="auth-hero-copy">
+        <span class="eyebrow">Auth First Experience</span>
+        <h1>Sign in before you enter the workspace.</h1>
+        <p>
+          Create your workspace, manage your profile, reset passwords, and then unlock the
+          product dashboard with tasks, members, billing, notifications, and AI features.
+        </p>
+        <ul class="auth-feature-list">
+          <li>Workspace creation for teams and organisations</li>
+          <li>User profiles with avatar, bio, skills, and GitHub link</li>
+          <li>Notification centre for mentions and task assignments</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Authentication</p>
+          <h2 id="auth-title">Sign in to DevCollab</h2>
+        </div>
+        <span class="status-pill" id="auth-mode-pill">Secure Access</span>
+      </div>
+
+      <div class="auth-switcher">
+        <button class="auth-switch active" type="button" data-auth-view="signin">Sign In</button>
+        <button class="auth-switch" type="button" data-auth-view="signup">Sign Up</button>
+        <button class="auth-switch" type="button" data-auth-view="forgot">Forgot Password</button>
+        <button class="auth-switch" type="button" data-auth-view="reset">Set New Password</button>
+      </div>
+
+      <form class="auth-form active" id="signin-form">
+        <label>
+          Email
+          <input id="signin-email" type="email" placeholder="demo@devcollab.app" required>
+        </label>
+        <label>
+          Password
+          <input id="signin-password" type="password" placeholder="Enter your password" required>
+        </label>
+        <button class="button button-primary full-width" type="submit">Sign In</button>
+      </form>
+
+      <form class="auth-form" id="signup-form">
+        <label>
+          Full name
+          <input id="signup-name" type="text" placeholder="Archita Guha Roy" required>
+        </label>
+        <label>
+          Email
+          <input id="signup-email" type="email" placeholder="you@devcollab.app" required>
+        </label>
+        <label>
+          Password
+          <input id="signup-password" type="password" placeholder="Create a password" required>
+        </label>
+        <label>
+          Workspace / organisation name
+          <input id="signup-workspace" type="text" placeholder="Atlas Labs" required>
+        </label>
+        <label>
+          GitHub link
+          <input id="signup-github" type="url" placeholder="https://github.com/yourprofile">
+        </label>
+        <button class="button button-primary full-width" type="submit">Create Account & Workspace</button>
+      </form>
+
+      <form class="auth-form" id="forgot-form">
+        <label>
+          Recovery email
+          <input id="forgot-email" type="email" placeholder="Enter your registered email" required>
+        </label>
+        <button class="button button-primary full-width" type="submit">Send Reset Link</button>
+      </form>
+
+      <form class="auth-form" id="reset-form">
+        <label>
+          Email
+          <input id="reset-email" type="email" placeholder="Registered email" required>
+        </label>
+        <label>
+          New password
+          <input id="reset-password" type="password" placeholder="Set a new password" required>
+        </label>
+        <button class="button button-primary full-width" type="submit">Update Password & Continue</button>
+      </form>
+
+      <div class="demo-note">
+        <strong>Demo credentials</strong>
+        <p>Email: <code>demo@devcollab.app</code></p>
+        <p>Password: <code>dev12345</code></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="app-shell hidden" id="app-shell">
+    <header class="app-topbar">
+      <div class="brand-wrap">
+        <span class="brand-mark">D</span>
+        <div>
+          <strong id="workspace-name-display">DevCollab</strong>
+          <p id="workspace-subtitle">Student developer workspace</p>
+        </div>
+      </div>
+
+      <button class="menu-toggle" type="button" id="menu-toggle" aria-expanded="false" aria-controls="topbar-menu">
+        Menu
+      </button>
+
+      <div class="topbar-menu" id="topbar-menu">
+      <div class="topbar-center">
+        <button class="topbar-tab" type="button" data-tab="workspace">Workspace</button>
+        <button class="topbar-tab" type="button" data-tab="members">Members</button>
+        <button class="topbar-tab" type="button" data-tab="billing">Billing</button>
+        <button class="topbar-tab" type="button" data-tab="account">Account</button>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-pill" type="button" id="notification-button">
+          Notifications
+          <span class="icon-pill-count" id="notification-count">0</span>
+        </button>
+        <span class="status-pill" id="session-indicator">Signed out</span>
+        <button class="button button-secondary" type="button" id="logout-button">Log out</button>
+      </div>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <section class="main-stage">
+        <section class="selection-state panel" id="selection-state">
+          <p class="eyebrow">Menu List</p>
+          <h2>Open a section to continue</h2>
+          <div class="start-grid">
+            <button class="start-card" type="button" data-jump-tab="workspace">
+              <strong>Workspace</strong>
+              <span>Kanban board, list view, calendar view, comments, and AI tools</span>
+            </button>
+            <button class="start-card" type="button" data-jump-tab="members">
+              <strong>Members</strong>
+              <span>Manage teammates, roles, and collaboration access</span>
+            </button>
+            <button class="start-card" type="button" data-jump-tab="billing">
+              <strong>Billing</strong>
+              <span>Check plan, payment method, and upgrade controls</span>
+            </button>
+            <button class="start-card" type="button" data-jump-tab="account">
+              <strong>Account</strong>
+              <span>Update profile, avatar, bio, skills, GitHub, and password</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="workspace">
+          <div class="workspace-layout">
+            <article class="panel board-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Workspace</p>
+                  <h2>Interactive Kanban board</h2>
+                </div>
+                <div class="presence-bar">
+                  <span class="presence-indicator">AG</span>
+                  <span class="presence-indicator">RK</span>
+                  <span class="presence-indicator">SP</span>
+                  <span class="status-pill" id="presence-status">Ankush is viewing this task</span>
+                </div>
+              </div>
+
+              <div class="workspace-tools">
+                <div class="view-switcher">
+                  <button class="view-tab active" type="button" data-task-view="board">Board</button>
+                  <button class="view-tab" type="button" data-task-view="list">List</button>
+                  <button class="view-tab" type="button" data-task-view="calendar">Calendar</button>
+                </div>
+                <span class="status-pill" id="workspace-notification">Live updates ready</span>
+              </div>
+
+              <div class="task-view active" data-task-panel="board">
+                <div class="board" id="task-board">
+                  <div class="column" data-status="todo">
+                    <div class="column-head">
+                      <h3>To Do</h3>
+                      <span class="count">0</span>
+                    </div>
+                  </div>
+                  <div class="column" data-status="progress">
+                    <div class="column-head">
+                      <h3>In Progress</h3>
+                      <span class="count">0</span>
+                    </div>
+                  </div>
+                  <div class="column" data-status="review">
+                    <div class="column-head">
+                      <h3>In Review</h3>
+                      <span class="count">0</span>
+                    </div>
+                  </div>
+                  <div class="column" data-status="done">
+                    <div class="column-head">
+                      <h3>Done</h3>
+                      <span class="count">0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="task-view" data-task-panel="list">
+                <div class="task-table" id="task-table"></div>
+              </div>
+
+              <div class="task-view" data-task-panel="calendar">
+                <div class="calendar-grid" id="task-calendar"></div>
+              </div>
+            </article>
+
+            <div class="workspace-side-stack">
+              <article class="panel comments-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Task Comments</p>
+                    <h2>@mentions and discussion</h2>
+                  </div>
+                </div>
+                <div class="comments-feed" id="comments-feed"></div>
+                <form id="comment-form" class="comment-form">
+                  <input id="comment-input" type="text" placeholder="Comment with @Riya or @Ankush" required>
+                  <button class="button button-primary" type="submit">Post</button>
+                </form>
+              </article>
+
+              <article class="panel snippets-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">Snippet Review</p>
+                    <h2>Search and inspect code</h2>
+                  </div>
+                </div>
+
+                <input class="search-input" id="snippet-search" type="search" placeholder="Search snippets">
+                <div class="snippet-list" id="snippet-list"></div>
+                <pre id="snippet-code"><code></code></pre>
+                <div class="snippet-review-box">
+                  <div class="snippet-review-head">
+                    <strong id="snippet-title">Realtime auth guard</strong>
+                    <span class="status-pill" id="snippet-score">8.6/10</span>
+                  </div>
+                  <ul id="snippet-review"></ul>
+                </div>
+              </article>
+
+              <article class="panel ai-panel">
+                <div class="panel-head">
+                  <div>
+                    <p class="eyebrow">AI Assistant</p>
+                    <h2>Project intelligence</h2>
+                  </div>
+                </div>
+                <div class="ai-actions">
+                  <button class="button button-secondary" type="button" id="summarise-project-button">Summarise Project</button>
+                  <button class="button button-secondary" type="button" id="blocking-project-button">What's Blocking Us?</button>
+                  <button class="button button-secondary" type="button" id="standup-project-button">Generate Standup</button>
+                </div>
+                <div class="ai-output-box" id="ai-output-box">AI project insights will appear here.</div>
+                <textarea id="feature-input" rows="4">Build a login system with email, Google OAuth, forgot password, and protected workspace routes.</textarea>
+                <button class="button button-primary full-width" type="button" id="breakdown-button">Generate Breakdown</button>
+                <ul class="generated-list" id="generated-tasks"></ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="members">
+          <div class="members-layout">
+            <article class="panel member-form-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Team Members</p>
+                  <h2>Add a real member entry</h2>
+                </div>
+              </div>
+
+              <form id="member-form">
+                <label>
+                  Full name
+                  <input id="member-name" type="text" placeholder="New teammate name" required>
+                </label>
+                <label>
+                  Email
+                  <input id="member-email" type="email" placeholder="teammate@example.com" required>
+                </label>
+                <label>
+                  Role
+                  <select id="member-role">
+                    <option>Member</option>
+                    <option>Admin</option>
+                    <option>Viewer</option>
+                  </select>
+                </label>
+                <button class="button button-primary full-width" type="submit">Add Member</button>
+              </form>
+            </article>
+
+            <article class="panel member-list-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Workspace Roster</p>
+                  <h2>Active members</h2>
+                </div>
+              </div>
+              <div class="member-list" id="member-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="billing">
+          <div class="billing-layout">
+            <article class="panel billing-plan-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Billing</p>
+                  <h2>Plan and payment details</h2>
+                </div>
+              </div>
+
+              <div class="billing-summary">
+                <div class="billing-line">
+                  <span>Current Plan</span>
+                  <strong id="billing-plan-name">Free</strong>
+                </div>
+                <div class="billing-line">
+                  <span>Amount</span>
+                  <strong id="billing-plan-amount">Rs 0/month</strong>
+                </div>
+                <div class="billing-line">
+                  <span>Members Used</span>
+                  <strong id="billing-member-usage">5 / 5</strong>
+                </div>
+                <div class="billing-line">
+                  <span>Next Renewal</span>
+                  <strong id="billing-renewal">Not applicable</strong>
+                </div>
+              </div>
+
+              <div class="billing-actions">
+                <button class="button button-primary" type="button" id="upgrade-button">Upgrade to Pro</button>
+                <button class="button button-secondary" type="button" id="downgrade-button">Switch to Free</button>
+              </div>
+            </article>
+
+            <article class="panel payment-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Payment Method</p>
+                  <h2>Add a card</h2>
+                </div>
+              </div>
+
+              <form id="payment-form">
+                <label>
+                  Cardholder name
+                  <input id="card-name" type="text" placeholder="Archita Guha Roy" required>
+                </label>
+                <label>
+                  Card number
+                  <input id="card-number" type="text" placeholder="4242 4242 4242 4242" required>
+                </label>
+                <div class="payment-row">
+                  <label>
+                    Expiry
+                    <input id="card-expiry" type="text" placeholder="12/29" required>
+                  </label>
+                  <label>
+                    CVV
+                    <input id="card-cvv" type="password" placeholder="123" required>
+                  </label>
+                </div>
+                <button class="button button-primary full-width" type="submit">Save Payment Method</button>
+              </form>
+
+              <div class="saved-card-box" id="saved-card-box">
+                <strong>No card saved yet.</strong>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="account">
+          <div class="account-layout">
+            <article class="panel account-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">User Profile</p>
+                  <h2>Profile and password</h2>
+                </div>
+              </div>
+
+              <div class="profile-box" id="profile-box"></div>
+
+              <form id="profile-form">
+                <label>
+                  Avatar initials
+                  <input id="profile-avatar" type="text" placeholder="AG" maxlength="3" required>
+                </label>
+                <label>
+                  Bio
+                  <input id="profile-bio" type="text" placeholder="Frontend engineer and hackathon builder" required>
+                </label>
+                <label>
+                  Skills
+                  <input id="profile-skills" type="text" placeholder="React, Node.js, UI Design" required>
+                </label>
+                <label>
+                  GitHub link
+                  <input id="profile-github" type="url" placeholder="https://github.com/yourprofile" required>
+                </label>
+                <button class="button button-primary full-width" type="submit">Update Profile</button>
+              </form>
+
+              <form id="password-form">
+                <label>
+                  Current password
+                  <input id="current-password" type="password" placeholder="Enter current password" required>
+                </label>
+                <label>
+                  New password
+                  <input id="new-password" type="password" placeholder="Create new password" required>
+                </label>
+                <button class="button button-primary full-width" type="submit">Change Password</button>
+              </form>
+            </article>
+
+            <article class="panel reset-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Recovery</p>
+                  <h2>Last password reset activity</h2>
+                </div>
+              </div>
+              <div class="recovery-box" id="recovery-box"></div>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
