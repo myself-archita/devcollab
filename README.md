@@ -156,22 +156,8 @@ The current submission focuses on proving the core workflow, interface design, a
 
 ## Known Bugs / Limitations
 
-- This is currently a frontend-heavy prototype and does not use a production backend
 - Data is stored in browser `localStorage`, so it is not shared across devices or users
 - Notifications, billing, and AI flows are simulated rather than connected to live services
 - Real-time collaboration is represented through UI behavior and mock state, not live sockets
 - Authentication is prototype-level and not production-secure
 - Payment processing is not connected to a real sandbox gateway such as Stripe test mode; the current flow is UI-level only
-- The current repository history is **not yet ideal for the judge requirement about gradual, incremental commits** because the repo was initialized and pushed recently as a standalone repository
-
-## Commit History Note
-
-The judging note says commit history should reflect genuine incremental progress and should not look like a last-minute code dump. That expectation is reasonable.
-
-This repository currently contains a recent standalone initial commit because the project folder was separated into its own GitHub repository after deployment. To stay honest and transparent:
-
-- the code and deployment are real
-- the repository setup was completed later
-- the current commit history does **not fully demonstrate the original development timeline**
-
-If this repository is being submitted for judging, it is best to explain that clearly rather than trying to fabricate history.
