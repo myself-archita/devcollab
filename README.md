@@ -21,29 +21,50 @@ The application is designed as a multi-section collaboration hub where teams can
 - manage account settings and workspace details
 - simulate AI-supported planning and project summaries
 
+## Demo Access
+
+### Test Account Credentials
+
+Use the following demo account to evaluate the application:
+
+- Email: `demo@devcollab.app`
+- Password: `dev12345`
+
+### Sandbox Payment Test Details
+
+The billing flow in the current prototype is a mock/sandbox UI flow. If you want to test the payment form, use:
+
+- Cardholder Name: `Archita Guha Roy`
+- Card Number: `4242 4242 4242 4242`
+- Expiry: `12/29`
+- CVV: `123`
+
 ## Tech Stack
 
-### Frontend
+### Current Prototype Stack
 
 - HTML5
 - CSS3
 - Vanilla JavaScript
-
-### Backend
-
 - No separate backend service is currently connected in the deployed `devcollab` app
-- Application state is managed on the client side
-
-### Database
-
 - No external database is currently connected
 - Local browser storage (`localStorage`) is used for persistence in the prototype
-
-### Third-Party APIs / Tools
-
 - Vercel for deployment and hosting
 - GitHub for source control and repository hosting
 - GitHub CLI for repository setup
+
+### Recommended Production Stack For Full-Scale Expansion
+
+If this project is extended into a full hackathon-grade production build, the recommended stack would be:
+
+- Frontend: `Next.js` or `React`
+- Backend: `Node.js` + `Express`
+- Database: `PostgreSQL` or `Supabase`
+- Realtime / collaboration: `Supabase Realtime`, `Socket.IO`, or Firebase
+- Auth: `Supabase Auth`, Firebase Auth, or custom JWT-based authentication
+- AI assistant integration: OpenAI API or similar LLM tooling
+
+This repository currently reflects the working prototype stack listed above, not the production stack recommendation.
 
 ## How To Run Locally
 
@@ -113,6 +134,17 @@ http://localhost:8000
 - Persistent prototype state using `localStorage`
 - Responsive interface for desktop and smaller screens
 
+## Product Positioning
+
+DevCollab is positioned as a unified collaboration layer for student developer teams. The product direction combines:
+
+- GitHub-style project and code collaboration
+- Notion-style workspace organization
+- Slack-style team coordination and notifications
+- AI-assisted planning, summarization, and blocker detection
+
+The current submission focuses on proving the core workflow, interface design, and collaboration experience in a single deployable prototype.
+
 ## Live Deployment
 
 - Live App: [https://devcollab-wheat.vercel.app/](https://devcollab-wheat.vercel.app/)
@@ -129,6 +161,7 @@ http://localhost:8000
 - Notifications, billing, and AI flows are simulated rather than connected to live services
 - Real-time collaboration is represented through UI behavior and mock state, not live sockets
 - Authentication is prototype-level and not production-secure
+- Payment processing is not connected to a real sandbox gateway such as Stripe test mode; the current flow is UI-level only
 - The current repository history is **not yet ideal for the judge requirement about gradual, incremental commits** because the repo was initialized and pushed recently as a standalone repository
 
 ## Commit History Note
