@@ -1,33 +1,48 @@
 # DevCollab
 
-## Problem Statement
+DevCollab is a full-stack collaboration platform for developer teams, built as a GitHub-meets-Notion-meets-Slack workspace for projects, tasks, documentation, team communication, and lightweight AI-assisted workflows.
 
-**Problem Statement Chosen:** `DevCollab - Real-Time Project Collaboration Platform for Developers`
+## Live Demo
 
-**Vision:** Build a GitHub-meets-Notion-meets-Slack platform designed for student developer teams, where they can manage projects, write documentation, review code snippets, track tasks, and communicate in one place, with AI acting as a project assistant.
+- **Production:** [https://devcollab-wheat.vercel.app/](https://devcollab-wheat.vercel.app/)
+- **Demo account:** `demo@devcollab.app`
+- **Password:** `dev12345`
 
-## Brief Description
+## What It Solves
 
-DevCollab is a collaborative workspace for student developer teams. It combines authentication, workspace management, member management, billing controls, task tracking, team communication, notifications, code snippet review, and lightweight AI-assisted project workflows into a single dashboard experience.
+Student and early-stage developer teams usually jump between too many tools:
 
-## Demo Access
+- one app for tasks
+- one for docs
+- one for chat
+- one for billing
+- one for workspace coordination
 
-- Email: `demo@devcollab.app`
-- Password: `dev12345`
+DevCollab unifies those workflows into one polished dashboard so teams can plan faster, coordinate better, and stay organized without context switching.
+
+## Key Capabilities
+
+- Secure sign-in, sign-up, password reset, and session-based auth
+- Workspace dashboard with task, member, billing, and account management
+- Kanban, list, and calendar task views
+- Team comments with `@mentions`
+- Notifications and activity feed
+- Member roles and workspace controls
+- Billing panel with Stripe Checkout test-mode support
+- AI-inspired project summaries, blocker analysis, and standup generation
 
 ## Tech Stack
 
-- Frontend: HTML5, CSS3, Vanilla JavaScript
-- Backend: Node.js, Express
-- Database: PostgreSQL
-- Local database option: Dockerized Postgres
-- Auth: server-side sessions stored in PostgreSQL and delivered through HttpOnly cookies
-- Payments: Stripe Checkout in test mode
-- Deployment: Vercel or any Node host with PostgreSQL access
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Backend:** Node.js, Express
+- **Database:** PostgreSQL
+- **Auth:** Server-side sessions with HttpOnly cookies
+- **Payments:** Stripe Checkout in test mode
+- **Deployment:** Vercel
 
-## Project Structure
+## Architecture
 
-- Simple view:
+DevCollab is structured as a modular full-stack application:
 
 ```text
 devcollab/
@@ -41,28 +56,36 @@ devcollab/
 └─ docs/
 ```
 
-- `server.js`: thin app shell, middleware, health/bootstrap, and route registration
-- `src/routes/index.js`: central route aggregator
-- `src/routes/auth.js`: authentication routes
-- `src/routes/billing.js`: billing and Stripe checkout routes
-- `src/routes/features/`: feature-specific route modules for profile, comments, members, tasks, and notifications
-- `src/db/bootstrap.js`: schema creation and demo data seeding
-- `src/db/pool.js`: PostgreSQL connection setup
-- `src/services/state.js`: app state assembly for API responses
-- `src/services/security.js`: password, session, and token helpers
-- `src/services/stripe.js`: Stripe Checkout integration
+- `server.js` keeps the app shell thin and wires everything together
+- `src/routes/index.js` acts as the central route aggregator
+- `src/routes/auth.js` handles authentication flows
+- `src/routes/billing.js` handles billing and checkout
+- `src/routes/features/` contains feature-specific route modules
+- `src/db/bootstrap.js` creates the schema and seeds demo data
+- `src/db/pool.js` configures PostgreSQL connectivity
+- `src/services/security.js` handles password, token, and session helpers
+- `src/services/state.js` assembles API state responses
+- `src/services/stripe.js` encapsulates Stripe Checkout integration
 
-## Local Setup
+## Why This Is Full Stack
 
-### 1. Install dependencies
+- The frontend communicates with Express `/api` endpoints
+- The backend persists data in PostgreSQL
+- Authentication is server-side and session-based
+- Billing is integrated through a real payment gateway flow
+- Workspace data, tasks, comments, members, and notifications are all database-backed
+
+## Local Development
+
+### 1) Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Create environment config
+### 2) Configure environment variables
 
-Copy `.env.example` to `.env` and adjust the values if needed:
+Copy `.env.example` to `.env` and update values as needed.
 
 ```env
 PORT=3000
@@ -73,13 +96,13 @@ PGPASSWORD=postgres
 PGDATABASE=devcollab
 ```
 
-For a hosted database, you can use a single connection string instead:
+For a hosted database, use a connection string instead:
 
 ```env
 POSTGRES_URL=postgres://user:password@host:5432/devcollab
 ```
 
-For Stripe test-mode billing:
+For Stripe test billing:
 
 ```env
 STRIPE_SECRET_KEY=sk_test_...
@@ -88,17 +111,17 @@ STRIPE_SUCCESS_URL=https://your-domain.com/?billing=success
 STRIPE_CANCEL_URL=https://your-domain.com/?billing=cancel
 ```
 
-### 3. Start PostgreSQL
+### 3) Start PostgreSQL
 
-If you have Docker installed, the easiest option is:
+If you have Docker installed:
 
 ```bash
 docker compose up -d
 ```
 
-If you already have PostgreSQL installed locally, create a database named `devcollab` and set the `.env` values to match your server.
+If you already run PostgreSQL locally, create a database named `devcollab` and match the `.env` values to your setup.
 
-### 4. Start the app
+### 4) Run the app
 
 ```bash
 npm run dev
@@ -106,75 +129,47 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-## Architecture Notes
+## Deployment
 
-- The frontend still talks to Express `/api` endpoints, but the backend is now modular instead of one large file.
-- Feature routes are separated by concern, which makes the app easier to explain, test, and extend.
-- The server bootstraps PostgreSQL tables on startup and seeds demo data only when the database is empty.
-- Sessions are server-side, hashed, and delivered via HttpOnly cookies for better production security.
-- Stripe Checkout runs in test mode so the billing flow looks and feels real during demos.
-
-## How It Works Now
-
-- The frontend still talks to the same Express `/api` routes
-- The backend now uses PostgreSQL instead of the checked-in SQLite file
-- The server auto-creates tables on startup
-- The server auto-seeds demo data when the database is empty
-- Passwords are stored as bcrypt hashes
-- Sessions are stored in PostgreSQL with server-side expiry and HttpOnly cookies
-- Stripe Checkout can be enabled for real test-mode payment flows
-- Static assets now live in `public/`, which is the Vercel-compatible layout for Express deployments
-
-## Deploying To Vercel
+### Vercel
 
 1. Import the GitHub repository into Vercel.
-2. Add a Postgres database from the Vercel Marketplace, or connect any managed Postgres provider.
-3. Make sure your Vercel project has either `POSTGRES_URL` or the `PGHOST` / `PGPORT` / `PGUSER` / `PGPASSWORD` / `PGDATABASE` variables set.
-4. Redeploy after the environment variables are saved.
+2. Connect a PostgreSQL provider or Vercel Postgres.
+3. Set `POSTGRES_URL` or the individual `PG*` variables.
+4. Set Stripe test-mode variables if you want the checkout flow enabled.
+5. Redeploy after saving environment variables.
 
-This backend now supports both local `PG*` variables and hosted connection strings such as `POSTGRES_URL`, which is the shape commonly injected by Vercel Postgres integrations.
+The app includes `vercel.json` so `/api/*` routes are correctly routed into the Express backend.
 
-## Security Notes
+## Security & Reliability
 
-- Existing legacy plain-text passwords are upgraded to bcrypt hashes automatically on startup.
-- Password reset and password change invalidate existing sessions for that user.
-- Session tokens are stored server-side as SHA-256 hashes and delivered through HttpOnly cookies.
-- You can tune bcrypt cost and session lifetime with `BCRYPT_ROUNDS` and `SESSION_TTL_DAYS`.
+- Passwords are stored as bcrypt hashes
+- Sessions are stored server-side and delivered through HttpOnly cookies
+- Password reset and password change invalidate old sessions
+- Security headers are enabled for browser hardening
+- The backend auto-creates tables on startup
+- Demo data is seeded when the database is empty
 
-## Features Built
+## Feature Highlights
 
-- Authentication flow with Sign In, Sign Up, Forgot Password, and Reset Password
-- Post-login workspace dashboard
+- Authentication flow with sign in, sign up, forgot password, and reset password
+- Workspace dashboard for projects and collaboration
 - Task management with board, list, and calendar views
-- Team comments with `@mentions`
-- Notifications center
-- Activity feed
+- Team comments with mentions
+- Notification center and activity feed
 - Member management with roles
-- Billing section with mock plan switching and card update flow
-- Stripe Checkout test-mode billing integration
-- Account and workspace profile editing
-- Persistent demo state stored in PostgreSQL
-- Responsive interface for desktop and smaller screens
+- Billing panel with payment-method capture and Stripe Checkout
+- Workspace profile and account editing
+- AI-inspired project summaries and blocker analysis
+
+## Team
+
+- **Archita Guha Roy** - Full-stack architecture, frontend implementation, backend integration, database design, deployment, and product UI/UX
+- **Shreyash Pandey** - Feature planning, testing/review, collaboration support, product feedback, and demo preparation
 
 ## Notes
 
-- The old `data/devcollab.sqlite` files are no longer used by the backend.
-- The old `supabase/` setup files have been removed because the app now uses a single Express + PostgreSQL path.
-- If you deploy this app, point it at a persistent PostgreSQL instance by setting the same `PG*` environment variables.
-- For production billing, set the Stripe environment variables listed above and create a test-mode subscription price.
+- The old SQLite and Supabase setup files are no longer used.
+- The project is now organized around a single Express + PostgreSQL backend.
+- For production billing, create a Stripe test-mode subscription price and set the Stripe environment variables above.
 
-## Live Deployment
-
-- Live App: [https://devcollab-wheat.vercel.app/](https://devcollab-wheat.vercel.app/)
-
-## Team Members
-
-- **Archita Guha Roy** - Frontend development, UI/UX, product structure, deployment, integration
-- **Shreyash Pandey** - Collaboration, project support, feature planning, testing/review
-
-## Notes
-
-- The old `data/devcollab.sqlite` files are no longer used by the backend.
-- The old `supabase/` setup files have been removed because the app now uses a single Express + PostgreSQL path.
-- If you deploy this app, point it at a persistent PostgreSQL instance by setting the same `PG*` environment variables.
-- For production billing, set the Stripe environment variables listed above and create a test-mode subscription price.
