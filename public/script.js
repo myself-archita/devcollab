@@ -601,12 +601,14 @@ bindSubmit("payment-form", async (event) => {
       method: "POST",
       body: JSON.stringify({ plan: "Pro" })
     });
-    showToast("Opening Stripe test checkout.");
+    applyServerState(checkout);
+    syncUI();
     if (checkout.checkoutUrl) {
+      showToast("Opening Stripe test checkout.");
       window.location.href = checkout.checkoutUrl;
       return;
     }
-    showToast("Stripe checkout was not available.");
+    showToast(checkout.message || "Billing updated in demo mode.");
   } catch (error) {
     showToast(error.message);
   }
@@ -618,11 +620,14 @@ bindClick("upgrade-button", async () => {
       method: "POST",
       body: JSON.stringify({ plan: "Pro" })
     });
+    applyServerState(checkout);
+    syncUI();
     if (checkout.checkoutUrl) {
+      showToast("Opening Stripe test checkout.");
       window.location.href = checkout.checkoutUrl;
       return;
     }
-    showToast("Stripe checkout was not available.");
+    showToast(checkout.message || "Billing updated in demo mode.");
   } catch (error) {
     showToast(error.message);
   }

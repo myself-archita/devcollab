@@ -13,6 +13,23 @@ function createBillingRoutes(deps) {
 
     app.post("/api/billing/checkout", requireSession, asyncRoute(async (req, res) => {
       const plan = String(req.body?.plan || "Pro");
+      if (!deps.stripeConfig?.secretKey) {
+        if (plan === "Pro") {
+          await query("update billing set plan = 'Pro', amount = 'Rs 499/month', member_limit = 999999, renewal = 'June 21, 2026' where id = 1");
+          await pushActivity("Workspace upgraded to Pro plan.");
+          await pushNotification("Plan upgraded", "Pro plan is now active.", true);
+          await respondWithState(res, req.user.id, {
+            checkoutUrl: null,
+            message: "Stripe is not configured in production, so the Pro plan was enabled in demo mode."
+          });
+          return;
+        }
+        await respondWithState(res, req.user.id, {
+          checkoutUrl: null,
+          message: "Stripe is not configured in production."
+        });
+        return;
+      }
       const session = await deps.createStripeCheckoutSession({
         user: req.user,
         plan,
