@@ -62,15 +62,62 @@ async function queryOne(sql, params = []) {
 
 function createFallbackStore() {
   return {
-    users: [],
-    members: [],
+    users: [
+      {
+        id: "u1",
+        name: "Demo User",
+        email: "demo@devcollab.app",
+        password: "dev12345",
+        reset_requested_at: null,
+        workspace_name: "Atlas Labs",
+        workspace_description: "Student developer workspace",
+        avatar: "DU",
+        bio: "Full-stack builder collaborating on hackathon products.",
+        skills: "React, Node.js, UI Design",
+        github: "https://github.com/demo-user"
+      }
+    ],
+    members: [
+      { id: "m1", name: "Archita Guha Roy", email: "archita@devcollab.app", role: "Owner" },
+      { id: "m2", name: "Riya Sen", email: "riya@devcollab.app", role: "Admin" },
+      { id: "m3", name: "Ankush Patel", email: "ankush@devcollab.app", role: "Member" },
+      { id: "m4", name: "Shruti Paul", email: "shruti@devcollab.app", role: "Member" },
+      { id: "m5", name: "Viewer Bot", email: "viewer@devcollab.app", role: "Viewer" }
+    ],
     billing: { id: 1, plan: "Free", amount: "Rs 0/month", member_limit: 5, renewal: "Not applicable", card_name: null, card_last4: null },
     app_meta: { passwordResetLog: "No reset requests yet." },
-    tasks: [],
-    snippets: [],
-    activity: [],
-    comments: [],
-    notifications: [],
+    tasks: [
+      { id: "t1", title: "Improve wiki page linking", priority: "p2", meta: "Docs", status: "todo", due: "May 22", updated: "1h ago" },
+      { id: "t2", title: "Notification digest", priority: "p1", meta: "Backend", status: "todo", due: "May 23", updated: "3h ago" },
+      { id: "t3", title: "Build OAuth login system", priority: "p0", meta: "Auth", status: "progress", due: "Today", updated: "2d ago" },
+      { id: "t4", title: "AI blocker detector", priority: "p1", meta: "AI", status: "progress", due: "Today", updated: "6h ago" },
+      { id: "t5", title: "Billing plan gate", priority: "p1", meta: "Payments", status: "review", due: "May 21", updated: "20m ago" },
+      { id: "t6", title: "Workspace role system", priority: "p2", meta: "Core", status: "done", due: "Done", updated: "Yesterday" }
+    ],
+    snippets: [
+      {
+        id: "auth",
+        title: "Realtime auth guard",
+        tags: ["auth", "roles", "workspace"],
+        code: `export function requireRole(user, allowedRoles) {\n  if (!user || !allowedRoles.includes(user.role)) {\n    throw new Error("Access denied for this workspace action.");\n  }\n\n  return true;\n}`,
+        score: "8.6/10",
+        review: [
+          "Clear role gate and straightforward guard logic.",
+          "Consider typed errors for access-denied handling.",
+          "Add audit logs so denied actions are visible to admins."
+        ]
+      }
+    ],
+    activity: ["Riya moved Billing plan gate to In Review.", "AI Assistant generated a blocker summary for the current sprint.", "Shruti updated Launch Readiness Checklist."],
+    comments: [
+      { id: "c2", author: "Ankush", text: "Checking this now. @Archita the OAuth blockers are still pending.", time: "2m ago" },
+      { id: "c1", author: "Riya", text: "@Ankush please verify the billing gate edge cases.", time: "5m ago" }
+    ],
+    notifications: [
+      { id: "n3", title: "AI summary ready", body: "A new standup report was generated.", unread: false },
+      { id: "n2", title: "Task assigned", body: "OAuth login system is assigned to you.", unread: true },
+      { id: "n1", title: "@Riya mentioned you", body: "Please review the billing gate edge cases.", unread: true }
+    ],
     sessions: []
   };
 }
